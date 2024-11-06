@@ -9,8 +9,22 @@
 
 ## Routes
 
-``php artisan route:list``
+**Utilizando el metodo: ``get``:**
+
+``php artisan route:<-- name_route -->``
 - Muestra la lista de rutas.
 
-``php artisan route:cache``
+**Utilizando el metodo: ``post``:**
+
+``php artisan route:<-- name_route -->``
 - Actualiza las rutas para cuando agregues más.
+
+
+### Controladores
+``php artisan make:controller <-- name_controller -->``
+
+
+get()
+post()
+put()
+delete()
