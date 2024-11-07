@@ -5,7 +5,7 @@ services:
         environment:
             - MYSQL_ROOT_PASSWORD=password
             - MYSQL_DATABASE=base
-            - MYSQL_TCP_PORT=3314
+            - MYSQL_TCP_PORT=3306
             - TZ=America/Mazatlan
         ports:
             - 3306:3306

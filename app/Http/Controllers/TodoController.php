@@ -3,51 +3,54 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Models\Todo;
+use Illuminate\Support\Facades\DB;
 
 class TodoController extends Controller
 {
     //get all resource
     public function index(){
-        return 'blablablablablablablabla';
+        return Todo::query()->select(DB::raw("CONCAT_WS(' ', name, description) AS registro"), 'id')->get();
     }
 
     //safe data
     public function store(Request $request)
     {
-        $validador = Validator::make($request->all(), [
-            'name' => 'required|string|max:10',
-        ]);
-
-        if ($validador->fails()) {
-            return $validador->errors();
-        }
-
-
-        $id = $request->get('id');
-        $name = $request->get('name');
-        $description = $request->get('description');
-        $status = $request->get('status');
-
         $data = [
-            'id' => $id,
-            'name' => $name,
-            'description' => $description,
-            'status' => $status
+            'name' => $request->get('name'),
+            'description' => $request->get('description'),
         ];
-        return response()->json($data, 201);
+
+        try {
+            $todo = Todo::query()->create($data);
+        }catch (\Exception $e){
+            return response()->unprocessable('Algo salio mal', ['Hubo un problema al crear el registro']);
+        }
+        return response()->success($todo);
     }
 
-    public function update($id){
-        return 'Actualizando id '.$id;
+    public function update(Request $request, $id){
+        $status = $request->get('status');
+        $model = Todo::query()->find($id);
+        $model->update(['status' => $status]);
+        return $model;
     }
+
 
     public function show($id){
-        return 'sfgvds '.$id;
+        return Todo::query()->select(DB::raw("CONCAT_WS(' ', name, description) AS registro"), 'id')->find($id);
     }
 
     public function destroy($id){
-        return 'Eliminando id '.$id;
+        $delete = Todo::withTrashed()->find($id);
+        if ($delete->deleted_at) {
+            $delete->restore();
+        } else{
+            $delete->delete();
+        }
+        return response()->success(['data' =>  'OKAY']);
     }
 
 }
+//roles: id, nmobre, slu o sobrenombre, permisos
+//hacer request
